@@ -1,0 +1,32 @@
+.App {
+  text-align: left;
+}
+
+.App-container {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    align-content: space-between;
+    margin-top: 50px;
+}
+
+.ItemList-container {
+    float: left;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.Item-container {
+    text-align: center;
+    flex-grow: 2;
+    flex-shrink: 0.5;
+}
+
+.Cart-container {
+    float: right;
+    width: 500px;
+    background-color: #fcfcfc;
+    padding: 25px;
+}
