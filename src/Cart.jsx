@@ -3,8 +3,6 @@ import { Button, Form, Table, Col, Row } from 'react-bootstrap';
 import $ from 'jquery';
 
 const uuid = require('uuid/v4');
-const clientID = '664827033839-558asbhl0cbd5jpmn08h9ojv3rnjuuv3.apps.googleusercontent.com';
-const clientSecret = 'yUzO10Uvor34AUGmnG2ZXW-K';
 const GSURL = 'https://script.google.com/macros/s/AKfycbzDeJ4P2PXNK8PZSrBg8_-PZ77nsM6-qbzddVaacjX3KfirOCc/exec';
 
 class Cart extends Component {
@@ -77,6 +75,9 @@ class Cart extends Component {
         return movies;
     }
 
+    // TODO: FIX GLITCH WHERE NOT ALL ITEMS LOAD TO SHEET
+    // TODO: ADD SUCCESSFUL SUBMIT MESSAGE
+
     postData(e) {
         e.preventDefault();     // page won't refresh
         let form = e.target;
@@ -108,6 +109,7 @@ class Cart extends Component {
             }
 
             const url = GSURL + "?callback=?"
+                              + "&func="+'SEND'
                               + "&cartID="+request.cartID
                               + "&itemName="+request.itemName
                               + "&itemQuantity="+request.itemQuantity

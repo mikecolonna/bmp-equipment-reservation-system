@@ -5,7 +5,7 @@
 .App-container {
     display: flex;
     flex-flow: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
     align-content: space-between;
     margin-top: 50px;
@@ -15,7 +15,8 @@
     float: left;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 
 .Item-container {
@@ -26,7 +27,7 @@
 
 .Cart-container {
     float: right;
-    width: 500px;
+    flex: 0 0 500px;
     background-color: #fcfcfc;
     padding: 25px;
 }
