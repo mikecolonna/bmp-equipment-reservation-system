@@ -94,8 +94,9 @@ class Cart extends Component {
         // generate unique cart ID
         const id = "CART-"+uuid();
 
+        let urls = [];
         items.forEach(function(item) {
-            let request = {
+            let data = {
                 cartID: id,
                 itemName: item.name,
                 itemQuantity: item.quantity,
@@ -110,27 +111,41 @@ class Cart extends Component {
 
             const url = GSURL + "?callback=?"
                               + "&func="+'SEND'
-                              + "&cartID="+request.cartID
-                              + "&itemName="+request.itemName
-                              + "&itemQuantity="+request.itemQuantity
-                              + "&userName="+request.userName
-                              + "&email="+request.email
-                              + "&phone="+request.phone
-                              + "&movie="+request.movie
-                              + "&startDate="+request.startDate
-                              + "&endDate="+request.endDate
-                              + "&timestamp="+request.timestamp
+                              + "&cartID="+data.cartID
+                              + "&itemName="+data.itemName
+                              + "&itemQuantity="+data.itemQuantity
+                              + "&userName="+data.userName
+                              + "&email="+data.email
+                              + "&phone="+data.phone
+                              + "&movie="+data.movie
+                              + "&startDate="+data.startDate
+                              + "&endDate="+data.endDate
+                              + "&timestamp="+data.timestamp;
 
-            $.ajax({
-                method: "GET",
-                dataType: "jsonp",
-                contentType: "text/plain;charset=utf-8",
-                url: url,
-                success: function(data) {
-                    console.log('Success! ' + data);
-                }
-            });
+            urls.push(url);
         });
+
+        // call ajax requests using callback function to ensure
+        // that all requests go through in a somewhat synchronous fashion
+        let counter = 0;
+        function makeRequest() {
+            if (counter <= urls.length) {
+                $.ajax({
+                    method: "GET",
+                    dataType: "jsonp",
+                    contentType: "text/plain;charset=utf-8",
+                    url: urls[counter],
+                    success: function(data) {
+                        console.log('Success! ' + data);
+                        if (counter < urls.length) {
+                            counter++;
+                            makeRequest();
+                        }
+                    }
+                });
+            }
+        }
+        makeRequest();
     }
 
     render() {
