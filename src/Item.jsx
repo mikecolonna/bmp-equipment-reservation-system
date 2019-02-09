@@ -29,7 +29,7 @@ class Item extends Component {
         return (
             <div className='Item-container'>
                 <Card style={{ width: '18rem' }}>
-                    <Card.Img variant="top" src={this.props.img} thumbnail/>
+                    <Card.Img variant="top" src={this.props.img} />
                     <Card.Body>
                         <Card.Title>{this.props.name}</Card.Title>
                         <Card.Subtitle><strong>{this.props.num_in_stock}</strong> in stock!</Card.Subtitle>

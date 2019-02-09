@@ -17,6 +17,9 @@ class Cart extends Component {
     addItemToCart(name, quantity) {
         const new_item = {"name": name, "quantity": quantity};
         let idx = this.findInList(name, this.state.items_in_cart);   // -1 if not found
+
+        // if index >= 0, item is in cart – so just update it
+        // else, item is not in cart – so add it to the list
         if (idx >= 0) {
             this.state.items_in_cart[idx]["quantity"] = new_item.quantity;
             this.setState({items_in_cart: this.state.items_in_cart});
@@ -26,6 +29,8 @@ class Cart extends Component {
         }
     }
 
+    // looks to see if item is already in cart
+    // returns index, else -1 if not found
     findInList(item_name, list) {
         for (let i = 0; i < list.length; i++) {
             if (list[i]["name"] === item_name) {
@@ -35,6 +40,7 @@ class Cart extends Component {
         return -1;
     }
 
+    // render the cart
     renderItems() {
         let curr_row = 0;
         const items = this.state.items_in_cart.map(item => {
@@ -53,6 +59,7 @@ class Cart extends Component {
         return items;
     }
 
+    // remove the associated item from the cart using the item index 'pos'
     handleRemove = row_to_remove => {
         console.log("remove clicked for index: " + row_to_remove);
         this.setState(state => ({
@@ -75,11 +82,16 @@ class Cart extends Component {
         return movies;
     }
 
-    // TODO: FIX GLITCH WHERE NOT ALL ITEMS LOAD TO SHEET
-    // TODO: ADD SUCCESSFUL SUBMIT MESSAGE
-
+    // send data to google sheets!
     postData(e) {
-        e.preventDefault();     // page won't refresh
+        e.preventDefault();     // make sure page won't refresh
+
+        // erase all previous messages and replace with loading message
+        $('#success-message').hide();
+        $('#failure-message').hide();
+        $('#loading-message').show();
+
+        // grab form values
         let form = e.target;
         const name = form['name'].value;
         const email = form['email'].value;
@@ -94,6 +106,7 @@ class Cart extends Component {
         // generate unique cart ID
         const id = "CART-"+uuid();
 
+        // generate GET urls
         let urls = [];
         items.forEach(function(item) {
             let data = {
@@ -135,14 +148,32 @@ class Cart extends Component {
                     dataType: "jsonp",
                     contentType: "text/plain;charset=utf-8",
                     url: urls[counter],
+                    error: function(request) {
+                        // ignore non-fatal errors (e.g. syntax errors)
+                        if (request.status === 200) {
+                            $('#loading-message').hide();
+                            $('#failure-message').hide();
+                            $('#success-message').show();
+                            return;
+                        }
+                        $('#loading-message').hide();
+                        $('#failure-message').show();
+                    },
                     success: function(data) {
                         console.log('Success! ' + data);
+
+                        // once this request is done, make the next request
                         if (counter < urls.length) {
                             counter++;
                             makeRequest();
                         }
                     }
                 });
+            } else {
+                // requests are done
+                $('#loading-message').hide();
+                $('#failure-message').hide();
+                $('#success-message').show();
             }
         }
         makeRequest();
@@ -225,9 +256,24 @@ class Cart extends Component {
                         </Form.Group>
                     </Form.Row>
 
-                    <Button variant='primary' type='submit'>
-                        Checkout
-                    </Button>
+                    <span>
+                        <Button id='submit-button' variant='primary' type='submit'>
+                            Checkout
+                        </Button>
+
+                        <span id='loading-message' style={{display: 'none'}}>
+                            Processing...
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        <span id='success-message' style={{display: 'none', color: 'green'}}>
+                            Your request was successfully submitted!
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span id='failure-message' style={{display: 'none', color: 'red'}}>
+                            Oops! Something went wrong. Try again!
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </span>
                 </Form>
             </div>
         );

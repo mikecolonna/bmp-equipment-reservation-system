@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ListGroup, Button, Pagination } from 'react-bootstrap';
 import Item from './Item';
+import './ItemList.css';
 import $ from 'jquery';
 
 const GSURL = 'https://script.google.com/macros/s/AKfycbzDeJ4P2PXNK8PZSrBg8_-PZ77nsM6-qbzddVaacjX3KfirOCc/exec';
@@ -11,7 +12,8 @@ class ItemList extends Component {
         super(props);
         this.state = {
             items: [],
-            activePage: "SOUND"
+            categories: [],
+            activePage: ''
         };
 
         this.handlePageChange = this.handlePageChange.bind(this);
@@ -23,12 +25,9 @@ class ItemList extends Component {
         this.setState( { activePage: page })
     }
 
-    // TODO: make loading screen while component is fetching data
-
     componentDidMount() {
         // call google sheets script
         // populate items
-        // work on images later
         const url = GSURL + "?callback=?"
                           + "&func="+'READ';
 
@@ -38,18 +37,57 @@ class ItemList extends Component {
             contentType: "text/plain;charset=utf-8",
             url: url,
             success: function(data) {
-                console.log(data);
-                this.setState( { items : data} )
+                // retrieve unique category labels
+                let itemCategories = [...new Set(data.map(item => {
+                    return item["CATEGORY"]
+                }))];
+
+                // update states
+                this.setState( { items : data,
+                                 categories: itemCategories,
+                                 activePage : itemCategories[0] } )
             }.bind(this)
         });
     }
 
-    renderList(category) {
-        console.log('rendering list!');
+    renderPages() {
+        // if no categories have been retrieved yet, render nothing
+        if (this.state.categories === undefined || this.state.categories.length === 0) {
+            return;
+        }
+
+        // otherwise, make a new page for each unique category
+        let pages = this.state.categories.map(category => {
+            return <Pagination.Item
+                        key={category}
+                        active={this.state.activePage === category}
+                        onClick={() => this.handlePageChange(category)}>
+                            {category}
+                    </Pagination.Item>
+        });
+
+        return <Pagination>
+                    {pages}
+                </Pagination>
+    }
+
+    renderList() {
+        // if items haven't been loaded yet, render a loading message
+        if (this.state.items === undefined || this.state.items.length === 0) {
+            return <div id='loading-items-message'>
+                        <h1><i class="fas fa-spinner fa-spin"></i></h1>
+                        <h3>
+                            <span>Seeing what we've got in stock...</span>
+                        </h3>
+                        <h4>Get ready to make a movie!</h4>
+                    </div>
+        }
+
+        // otherwise, load items in the currently selected category
         let items = [];
         let itemCount = 0;
         items = this.state.items.map(item => {
-            if (item["DISPLAY?"] === "Y" && item["CATEGORY"] === category) {
+            if (item["DISPLAY?"] === "Y" && item["CATEGORY"] === this.state.activePage) {
                 itemCount++;
                 return <Item
                         className="List-card"
@@ -67,39 +105,11 @@ class ItemList extends Component {
               </ListGroup>
     }
 
-    // TODO: fix rendering of ND filters –– they don't disappear after displayed
-
     render() {
         return (
             <div>
-                <Pagination>
-                    <Pagination.Item
-                    key="SOUND"
-                    active={this.state.activePage === "SOUND"}
-                    onClick={() => this.handlePageChange("SOUND")}>
-                        SOUND
-                    </Pagination.Item>
-                    <Pagination.Item
-                    key="CINEMATOGRAPHY"
-                    active={this.state.activePage === "CINEMATOGRAPHY"}
-                    onClick={() => this.handlePageChange("CINEMATOGRAPHY")}>
-                        CINEMATOGRAPHY
-                    </Pagination.Item>
-                    <Pagination.Item
-                    key="LIGHTING"
-                    active={this.state.activePage === "LIGHTING"}
-                    onClick={() => this.handlePageChange("LIGHTING")}>
-                        LIGHTING
-                    </Pagination.Item>
-                    <Pagination.Item
-                    key="MISC"
-                    active={this.state.activePage === "MISC"}
-                    onClick={() => this.handlePageChange("MISC")}>
-                        MISC
-                    </Pagination.Item>
-                </Pagination>
-
-                {this.renderList(this.state.activePage)}
+                {this.renderPages()}
+                {this.renderList()}
             </div>
         );
     }
