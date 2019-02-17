@@ -1,42 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
-import logo from './logo.svg';
 import './App.css';
-import ItemList from './ItemList';
-import Cart from './Cart';
-
-const items = [
-    {
-        name: "Nikon D7000",
-        img: "assets/nikond7000.jpg",
-        num_in_stock: 2,
-        info: "A good camera."
-    },
-    {
-        name: "Manfrotto Tripod",
-        img: "assets/manfrotto.jpg",
-        num_in_stock: 4,
-        info: "One leg is broken."
-    },
-    {
-        name: "Manfrotto Tripod",
-        img: "assets/manfrotto.jpg",
-        num_in_stock: 4,
-        info: "One leg is broken."
-    },
-    {
-        name: "Manfrotto Tripod",
-        img: "assets/manfrotto.jpg",
-        num_in_stock: 4,
-        info: "One leg is broken."
-    }
-]
+import ItemList from './ItemList.jsx';
+import Cart from './Cart.jsx';
 
 const movies = [
-    "Bad Vibes",
-    "Sometimes I Want To Cut Off My Hands",
-    "One Man's Trash",
-    "Landing Strip"
+    "The Perambulators",
+    "Mouthbreathers",
+    "Light and Sound",
+    "R.E.M.",
+    "Other"
 ]
 
 var EventEmitter = require('wolfy87-eventemitter');

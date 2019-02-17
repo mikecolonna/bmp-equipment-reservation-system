@@ -87,9 +87,11 @@ class Cart extends Component {
         e.preventDefault();     // make sure page won't refresh
 
         // erase all previous messages and replace with loading message
+        // disable submit button so user can't send form twice
         $('#success-message').hide();
         $('#failure-message').hide();
         $('#loading-message').show();
+        $('#submit-button').prop('disabled', true);
 
         // grab form values
         let form = e.target;
@@ -154,10 +156,12 @@ class Cart extends Component {
                             $('#loading-message').hide();
                             $('#failure-message').hide();
                             $('#success-message').show();
+                            $('#submit-button').prop('disabled', false);
                             return;
                         }
                         $('#loading-message').hide();
                         $('#failure-message').show();
+                        $('#submit-button').prop('disabled', false);
                     },
                     success: function(data) {
                         console.log('Success! ' + data);
@@ -174,6 +178,7 @@ class Cart extends Component {
                 $('#loading-message').hide();
                 $('#failure-message').hide();
                 $('#success-message').show();
+                $('#submit-button').prop('disabled', false);
             }
         }
         makeRequest();

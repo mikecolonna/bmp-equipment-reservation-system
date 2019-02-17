@@ -21,13 +21,14 @@
 
 .Item-container {
     text-align: center;
+    font-size: 0.75em;
     flex-grow: 2;
     flex-shrink: 0.5;
 }
 
 .Cart-container {
     float: right;
-    flex: 0 0 500px;
+    flex: 0 0 350px;
     background-color: #fcfcfc;
-    padding: 25px;
+    padding: 12.5px;
 }

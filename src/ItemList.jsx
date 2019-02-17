@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ListGroup, Button, Pagination } from 'react-bootstrap';
-import Item from './Item';
+import Item from './Item.jsx';
 import './ItemList.css';
 import $ from 'jquery';
 
@@ -20,8 +20,6 @@ class ItemList extends Component {
     }
 
     handlePageChange(page) {
-        console.log(page);
-        console.log(page + " selected");
         this.setState( { activePage: page })
     }
 
