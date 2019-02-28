@@ -101,6 +101,7 @@ class Cart extends Component {
         const movie = form['movieChoice'].value;
         const startDate = form['startDate'].value;
         const endDate = form['endDate'].value;
+        const pickupDate = form['pickupDate'].value;
 
         // get cart items/quantities from state
         const items = this.state.items_in_cart;
@@ -121,6 +122,7 @@ class Cart extends Component {
                 movie: movie,
                 startDate: startDate,
                 endDate: endDate,
+                pickupDate: pickupDate,
                 timestamp: new Date()
             }
 
@@ -135,6 +137,7 @@ class Cart extends Component {
                               + "&movie="+data.movie
                               + "&startDate="+data.startDate
                               + "&endDate="+data.endDate
+                              + "&pickupDate="+data.pickupDate
                               + "&timestamp="+data.timestamp;
 
             urls.push(url);
@@ -242,6 +245,16 @@ class Cart extends Component {
                     </Form.Row>
 
                     <Form.Row>
+                        <Form.Group as={Col} controlId="pickup-date">
+                            <Form.Label>
+                                <h6>Pickup Date</h6>
+                                <span>(must be Wed or Thurs, see Office Hours above)</span>
+                            </Form.Label>
+                            <Form.Control name='pickupDate' type="date" required/>
+                        </Form.Group>
+                    </Form.Row>
+
+                    <Form.Row>
                         <Form.Group as={Col}>
                             <Form.Label><h6>Terms & Conditions</h6></Form.Label>
                             <Form.Label>
@@ -262,6 +275,11 @@ class Cart extends Component {
                     </Form.Row>
 
                     <span>
+                        <p>
+                            <strong>
+                                Important Note: Clicking 'Checkout' does not guarantee equipment will be reserved for you!
+                            </strong>
+                        </p>
                         <Button id='submit-button' variant='primary' type='submit'>
                             Checkout
                         </Button>
